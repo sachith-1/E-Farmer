@@ -10,17 +10,17 @@ if (!isset($_SESSION["buyerTP"]) || empty($_SESSION["buyerTP"])) {
 include("../../includes/dbConn.php");
 
 $lang;
-if (isset($_GET["lang"])) {
+if (isset($_GET["lang"])){
     $lang=$_GET["lang"];
     if ($_GET["lang"] == "SI") {
-      include("../../lang/lang_buyerIndex.SI.php");
+      include("../../lang/lang_buyerOrder.SI.php");
     } else if ($_GET["lang"] == "EN") {
-      include("../../lang/lang_buyerIndex.EN.php");
+      include("../../lang/lang_buyerOrder.EN.php");
     } else {
-      include("../../lang/lang_buyerIndex.EN.php");
+      include("../../lang/lang_buyerOrder.EN.php");
     }
 } else {
-    include("../../lang/lang_buyerIndex.EN.php");
+    include("../../lang/lang_buyerOrder.EN.php");
     $lang="EN";
 }
 
@@ -52,7 +52,6 @@ if(mysqli_stmt_prepare($stmt,$query)){
             $lname=$row1["lname"];
             $address=$row1["address"];
             $teleNo=$row1["telNo"];
-            
         }
     }
     else{
@@ -110,7 +109,7 @@ while($row3=mysqli_fetch_assoc($result)){
                     font-weight: 600;
                     margin-bottom: 4px;
                   ">
-                    VEGETABLE ORDER
+                    <?php echo $langBuyerOrder["order"] ?>
                 </div>
                 <h4 class="card-title text-center">
                     <?php echo $GLOBALS["cName"] ?>
@@ -122,13 +121,13 @@ while($row3=mysqli_fetch_assoc($result)){
                     color: #11c278;
                     font-weight: 600;
                     margin-bottom: 4px;">
-                                👨‍🌾 FARMER DETAILS
+                                👨‍🌾 <?php echo $langBuyerOrder["fDetails"] ?>
                             </div>
                             <div class="card-text">
-                                Name : <?php echo $fname.' '.$lname ?>
+                            <?php echo $langBuyerOrder["name"] ?> <?php echo $fname.' '.$lname ?>
                             </div>
-                            <div class="card-text">Address : <?php echo $address ?></div>
-                            <div class="card-text">Telephone No : <?php echo $teleNo ?></div>
+                            <div class="card-text"><?php echo $langBuyerOrder["address"] ?> <?php echo $address ?></div>
+                            <div class="card-text"><?php echo $langBuyerOrder["tpNo"] ?> <?php echo $teleNo ?></div>
                         </div>
                     </div>
                     <div class="col-12 col-md-10 col-lg-5 card mb-3 mb-md-4">
@@ -137,13 +136,13 @@ while($row3=mysqli_fetch_assoc($result)){
                     color: #11c278;
                     font-weight: 600;
                     margin-bottom: 4px;">
-                                CROP DETAILS
+                                <?php echo $langBuyerOrder["cDetails"] ?>
                             </div>
                             <div class="card-text">
-                                Crop : <?php echo $cName ?>
+                            <?php echo $langBuyerOrder["crop"] ?> <?php echo $cName ?>
                             </div>
-                            <div class="card-text">Max Weight : <?php echo $maxWeight." " ?> kg</div>
-                            <div class="card-text">Price per Kg : Rs.<?php echo $pricePerKg ?></div>
+                            <div class="card-text"><?php echo $langBuyerOrder["mWeight"] ?> <?php echo $maxWeight." " ?> kg</div>
+                            <div class="card-text"><?php echo $langBuyerOrder["pricePerKgRs"] ?><?php echo $pricePerKg ?></div>
                         </div>
                     </div>
                 </div>
@@ -155,7 +154,7 @@ while($row3=mysqli_fetch_assoc($result)){
                     margin-bottom: 4px;">
                         <div class="row border-bottom border-success">
                             <div class="col-6 d-flex justify-content-center">
-                                PRICE PER KG
+                            <?php echo $langBuyerOrder["pricePerKg"] ?>
                             </div>
                             <div class="col-6 d-flex justify-content-center">
                                 KG
@@ -163,7 +162,7 @@ while($row3=mysqli_fetch_assoc($result)){
                         </div>
                     </div>
                 </div>
-                <form action="" method="POST">
+                <form action="orderSuccess.php" method="POST">
                     <div class="row border-bottom border-success mb-3 mb-md-4">
                         <div class="col-6">
                             <h6 class="card-title"><?php echo $cName ?></h6>
@@ -171,7 +170,7 @@ while($row3=mysqli_fetch_assoc($result)){
                         <div class="col-6">
                             <div class="row">
                                 <p class="col-6 card-title d-flex justify-content-center pt-2">
-                                    Rs.<?php echo $pricePerKg ?>
+                                <?php echo $langBuyerOrder["rs"] ?><?php echo $pricePerKg ?>
                                 </p>
                                 <h6 class="col-6 d-flex justify-content-center">
                                     <input type="number" max=<?php echo $maxWeight ?> min="1" id="vegWeight" oninput="calTotal()" placeholder="10" class="form-control text-center font-weight-bold" name="vegWeight" id="">
@@ -185,7 +184,7 @@ while($row3=mysqli_fetch_assoc($result)){
                     <div class="row mb-3 mb-md-4">
                         <div class="col-6">
                             <h6 class="card-title">
-                                Total
+                            <?php echo $langBuyerOrder["total"] ?>
                             </h6>
                         </div>
                         <div class="col-6 pb-2">    
@@ -198,11 +197,20 @@ while($row3=mysqli_fetch_assoc($result)){
                             <div class="row">
                                 <div class="col-4 col-md-6"></div>
                                 <div class="col-8 col-md-6 d-flex justify-content-end">
-                                    <input type="submit" value="Order Now" class="btn btn-success">
+                                    <input type="submit" id="submitBtn" disabled name="submit" value=<?php echo '"'.$langBuyerOrder["orderNow"].'"' ?> class="btn btn-success">
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" name="cname" value=<?php echo '"'.$cName.'"' ?>>
+                    <input type="hidden" name="fname" value=<?php echo $fname ?>>
+                    <input type="hidden" name="fNum" value=<?php echo $teleNo ?>>
+                    <input type="hidden" name="pricePerKg" value=<?php echo $pricePerKg ?>>
+                    <input type="hidden" name="maxWeight" value=<?php echo $maxWeight ?>>
+                    <input type="hidden" name="lang" value=<?php echo $lang ?>>
+                    <input type="hidden" name="fID" value=<?php echo $farmerID ?>>
+                    <input type="hidden" name="cID" value=<?php echo $cID ?>>
+                    <input type="hidden" name="fpID" value=<?php echo $cropPriceID ?>>
                 </form>
             </div>
         </div>
@@ -221,8 +229,10 @@ while($row3=mysqli_fetch_assoc($result)){
             var t=pricePerKG.val()*vegWeight.val();
             if(t>0 && maxWeight>=vegWeight.val()*1 ){
                 total.val("Rs."+t);
+                document.getElementById("submitBtn").disabled=false;
             }else{
                 total.val(lang.text() === "SI"?"අගය වැරදි":"INVALID VALUE");
+                document.getElementById("submitBtn").disabled=true;
             }      
 
         }

@@ -20,7 +20,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     foreach ($cropArray as $cID) {
         $msg .= $priceArray[$cID][0] . " =  Rs." . $priceArray[$cID][1] . PHP_EOL;
     }
-
     $api_instance = new NotifyLk\Api\SmsApi();
     $user_id = "11740";
     $api_key = "T4P4juDwPVnugOaezDrD";
